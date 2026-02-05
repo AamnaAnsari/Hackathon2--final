@@ -1,0 +1,22 @@
+# Node / frontend artifacts
+node_modules
+.next
+npm-debug.log
+yarn-error.log
+
+# Python / backend artifacts
+__pycache__
+*.pyc
+.venv
+venv
+
+# VCS and editor files
+.git
+.gitignore
+.DS_Store
+.idea
+.vscode
+
+# Docker
+Dockerfile*
+.dockerignore
