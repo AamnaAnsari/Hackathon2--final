@@ -11,6 +11,7 @@ export type Task = {
   user_id: string;
   title: string;
   completed: boolean;
+  priority: "Low" | "Medium" | "High";
 };
 
 export async function getTasks(userId: string = DUMMY_USER_ID): Promise<Task[]> {
@@ -29,6 +30,7 @@ export async function createTask(
 export type TaskUpdate = {
   title: string;
   completed: boolean;
+  priority?: "Low" | "Medium" | "High";
 };
 
 export async function updateTask(

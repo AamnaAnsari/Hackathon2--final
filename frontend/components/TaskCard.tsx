@@ -14,6 +14,13 @@ export function TaskCard({ task, userId, onTaskChange }: TaskCardProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // ⭐ Priority styles (NEW)
+  const priorityStyles: Record<string, string> = {
+    High: "bg-red-500/15 text-red-400 border-red-500/30",
+    Medium: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
+    Low: "bg-green-500/15 text-green-400 border-green-500/30",
+  };
+
   async function handleToggleCompleted() {
     if (loading) return;
     setError(null);
@@ -26,6 +33,26 @@ export function TaskCard({ task, userId, onTaskChange }: TaskCardProps) {
       onTaskChange();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ⭐ Priority change handler (NEW)
+  async function handlePriorityChange(priority: "Low" | "Medium" | "High") {
+    if (loading) return;
+    setError(null);
+    setLoading(true);
+
+    try {
+      await updateTask(userId, task.id, {
+        title: task.title,
+        completed: task.completed,
+        priority,
+      });
+      onTaskChange();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update priority");
     } finally {
       setLoading(false);
     }
@@ -46,8 +73,9 @@ export function TaskCard({ task, userId, onTaskChange }: TaskCardProps) {
   }
 
   return (
-    <li className="flex flex-col gap-1 rounded-lg border border-zinc-800/50 bg-zinc-900 px-4 py-3">
+    <li className="flex flex-col gap-2 rounded-lg border border-zinc-800/50 bg-zinc-900 px-4 py-3">
       <div className="flex items-center gap-3">
+        {/* Complete toggle */}
         <button
           type="button"
           onClick={handleToggleCompleted}
@@ -61,6 +89,8 @@ export function TaskCard({ task, userId, onTaskChange }: TaskCardProps) {
             <Circle className="h-5 w-5" />
           )}
         </button>
+
+        {/* Title */}
         <span
           className={
             "min-w-0 flex-1 " +
@@ -71,6 +101,15 @@ export function TaskCard({ task, userId, onTaskChange }: TaskCardProps) {
         >
           {task.title}
         </span>
+
+        {/* ⭐ Priority badge (NEW) */}
+        <span
+          className={`rounded-full border px-2 py-0.5 text-xs font-medium ${priorityStyles[task.priority]}`}
+        >
+          {task.priority}
+        </span>
+
+        {/* Delete */}
         <button
           type="button"
           onClick={handleDelete}
@@ -81,6 +120,26 @@ export function TaskCard({ task, userId, onTaskChange }: TaskCardProps) {
           <Trash2 className="h-5 w-5" />
         </button>
       </div>
+
+      {/* ⭐ Priority buttons (NEW) */}
+      <div className="flex gap-2">
+        {(["Low", "Medium", "High"] as const).map((p) => (
+          <button
+            key={p}
+            onClick={() => handlePriorityChange(p)}
+            disabled={loading}
+            className={`rounded-md border px-2 py-1 text-xs transition
+              ${
+                task.priority === p
+                  ? priorityStyles[p]
+                  : "border-zinc-700 text-zinc-400 hover:bg-zinc-800"
+              }`}
+          >
+            {p}
+          </button>
+        ))}
+      </div>
+
       {error && (
         <p className="text-xs text-red-400" role="alert">
           {error}
