@@ -3,7 +3,7 @@ import axios from "axios";
 const DUMMY_USER_ID = "test-user";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "https://amna2468-todo-backend-hackathon.hf.space/api",
 });
 
 export type Task = {
