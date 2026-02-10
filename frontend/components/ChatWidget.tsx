@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { MessageCircle, Send, X } from "lucide-react";
 import axios from "axios";
 
-const CHAT_API = "http://localhost:8000/api/chat";
+const CHAT_API = "https://amna2468-todo-backend-hackathon.hf.space/api/chat";
 
 type Message = { role: "user" | "assistant"; content: string };
 
